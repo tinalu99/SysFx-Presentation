@@ -186,11 +186,7 @@ pub fn bulkwrite(bulkwrite_file: &String, lsm_tree: &mut LSMTree) {
 			levels.push(DiskLevel::empty_level(run_capacity, level))
 		}
 		let run_capacity = CONFIGURATION.BUFFER_CAPACITY * CONFIGURATION.SIZE_RATIO.pow(level as u32) / CONFIGURATION.RUNS_PER_LEVEL;
-		let max_run_records = if level == last_level {
-			(run_capacity * (CONFIGURATION.RUNS_PER_LEVEL / CONFIGURATION.RUNS_LAST_LEVEL)) / CONFIGURATION.RECORD_SIZE
-		} else {
-			run_capacity / CONFIGURATION.RECORD_SIZE
-		};
+		let max_run_records = run_capacity / CONFIGURATION.RECORD_SIZE;
 		let records_to_read = std::cmp::min(num_records - records_read, max_run_records);
 		let current = &mut v[records_read..records_read + records_to_read].to_vec();
 		current.sort_by(|a, b| a.key.cmp(&b.key));
