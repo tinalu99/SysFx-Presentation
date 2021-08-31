@@ -1,8 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
-use log::{debug};
 use std::sync::{Arc};
-use std::time::{SystemTime};
 
 use super::configuration::CONFIGURATION;
 use super::lib_template::{Record};

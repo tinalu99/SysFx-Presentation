@@ -3,13 +3,11 @@ use std::collections::HashSet;
 
 use crate::configuration::CONFIGURATION;
 
-use crate::lib_in_memory::{MemoryBuffer};
 use crate::lib_helper::{records_to_bytes};
 use crate::lib_template::{Record};
 use crate::lib_merge::{merge_from_files};
 use super::lib_disk_run::{Run};
 use super::lib_disk_file::{DiskFile};
-use std::time::{SystemTime};
 use std::sync::{Arc};
 use parking_lot::{RwLock};
 use atomic_counter::{RelaxedCounter, AtomicCounter};
@@ -37,13 +35,13 @@ impl DiskLevel {
     }
 
     pub fn create_level(files: Vec<Vec<Arc<DiskFile>>>, size_of_run: usize, capacity_of_run: usize, level: usize) -> DiskLevel {
-        let mut new_level = DiskLevel::empty_level(capacity_of_run, level);
+        let new_level = DiskLevel::empty_level(capacity_of_run, level);
         new_level.flush(files, size_of_run, size_of_run, capacity_of_run);
         new_level
     }
 
     pub fn create_level_from_buffer(data: Vec<Record>, size: usize, capacity_of_run: usize, level: usize) -> DiskLevel {
-        let mut new_level = DiskLevel::empty_level(capacity_of_run, level);
+        let new_level = DiskLevel::empty_level(capacity_of_run, level);
         new_level.flush_from_buffer(data, size, capacity_of_run);
         new_level
     }
@@ -137,7 +135,6 @@ impl DiskLevel {
                 let mut files_size = 0;
                 let mut merged_files_size = 0;
                 let mut file_idx = merged_files.len() - 1;
-                let mut new_last_run = Run::create_empty_run(capacity_of_run, self.level, self.run_counter.get());
                 for i in 0..merged_files.len() {
                     files_size += merged_files[i].size;
                     // file_idx is the index of merged_files in which all files before this index could fit into this run
@@ -146,7 +143,7 @@ impl DiskLevel {
                         merged_files_size = files_size;
                     }
                 }
-                new_last_run = Run::create_run_from_files(merged_files_size, capacity_of_run, merged_files[..file_idx + 1].to_vec(), self.level, self.run_counter.get());
+                let new_last_run = Run::create_run_from_files(merged_files_size, capacity_of_run, merged_files[..file_idx + 1].to_vec(), self.level, self.run_counter.get());
                 self.run_counter.inc();
                 drop(runs);
 
@@ -181,7 +178,7 @@ impl DiskLevel {
         while counter < merged_files.len() + 1 {
             files_size += merged_files[counter - 1].size;
             if files_size >= size_per_run || counter == merged_files.len() {
-                let mut new_run = Run::create_run_from_files(files_size, capacity_of_run, merged_files[last_counter..counter].to_vec(), self.level, self.run_counter.get());
+                let new_run = Run::create_run_from_files(files_size, capacity_of_run, merged_files[last_counter..counter].to_vec(), self.level, self.run_counter.get());
                 last_counter = counter;
                 self.run_counter.inc();
                 runs_to_add.push(new_run);

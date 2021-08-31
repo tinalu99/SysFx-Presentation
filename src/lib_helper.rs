@@ -1,7 +1,4 @@
 //#[cfg(feature = "deadlock_detection")]
-use parking_lot::deadlock;
-use std::thread;
-use std::time::Duration;
 use is_sorted::IsSorted;
 use log::{info, error, debug};
 use std::convert::TryInto;
@@ -11,12 +8,9 @@ use std::fs::File;
 use std::time::{Instant};
 use std::sync::{Arc};
 use atomic_counter::{AtomicCounter};
-//use std::collections::HashMap;
 use threadpool::ThreadPool;
 use super::configuration::CONFIGURATION;
 use super::lib_template::{Record};
-//use super::lib_workload;
-//use super::lib_in_memory;
 use super::lib_lsm_tree::LSMTree;
 use super::lib_on_disk::lib_disk_level::DiskLevel;
 use super::lib_on_disk::lib_disk_run::Run;

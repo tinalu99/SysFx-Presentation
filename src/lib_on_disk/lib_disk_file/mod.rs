@@ -2,7 +2,6 @@ use std::convert::TryInto;
 use std::fs::{File};
 use std::io::{SeekFrom};
 use std::io::prelude::*;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::configuration::CONFIGURATION;
 use crate::lib_helper::{bytes_to_records, binary_search_fp};

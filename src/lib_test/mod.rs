@@ -5,12 +5,6 @@ use std::fs::{File};
 
 use super::lib_workload;
 use super::lib_helper;
-use super::lib_lsm_tree::LSMTree;
-//use super::configuration::CONFIGURATION;
-
-//use bloom::{BloomFilter};
-//use rand::Rng;
-//use test::Bencher;
 use gag::Redirect;
 use log::{info, debug};
 use threadpool::{ThreadPool};
@@ -205,7 +199,7 @@ pub fn test_lsm_tree(bulkwrite_file: &String, workload_file: &String, pool: Thre
 pub fn test_small_workload(pool: ThreadPool) {
 	let mut workload_file: std::string::String = "small_workload.txt".to_string();
 	let mut bulkwrite_file: std::string::String = "small_bulkwrite.txt".to_string();
-	//lib_workload::set_workload_specifications(true, true, true, 1_000_000, 100_000, 100_000, i32::min_value(), i32::max_value(), &mut workload_file, &mut bulkwrite_file);
+	lib_workload::set_workload_specifications(true, true, true, 1_000_000, 100_000, 100_000, i32::min_value(), i32::max_value(), &mut workload_file, &mut bulkwrite_file);
 	test_lsm_tree(&bulkwrite_file, &workload_file, pool);
 }
 
@@ -247,7 +241,6 @@ pub fn test_update_heavy_workload(pool: ThreadPool) {
 // 	lsm_tree.delete_files();
 // 	assert!(new_keys.len() == keys.len());
 // }
-
 
 fn run_bench(_is_data_uniform: bool, _is_query_uniform: bool, _is_single_result: bool, _n_bulkwrites: usize, _n_puts: usize, _n_gets: usize, workload_file: &mut String, bulkwrite_file: &mut String) {
 	//lib_workload::set_workload_specifications(_is_data_uniform, _is_query_uniform, _is_single_result, _n_bulkwrites, _n_puts, _n_gets, i32::min_value(), i32::max_value(), workload_file, bulkwrite_file);

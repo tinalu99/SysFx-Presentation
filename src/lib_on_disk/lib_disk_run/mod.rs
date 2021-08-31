@@ -5,11 +5,7 @@ use std::convert::TryInto;
 use std::fs;
 use std::fs::{File};
 use std::io::prelude::*;
-use std::time::{SystemTime};
 use atomic_counter::{RelaxedCounter, AtomicCounter};
-
-use log::{debug};
-
 use crate::configuration::CONFIGURATION;
 use crate::lib_helper::{generate_filename, bytes_to_records, binary_search_fp};
 use crate::lib_template::{Record};
