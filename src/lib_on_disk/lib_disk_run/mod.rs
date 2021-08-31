@@ -57,6 +57,28 @@ impl Run {
 		}
     }
 
+    pub fn create_run_from_files(size: usize, capacity: usize, files: Vec<Arc<DiskFile>>, level: usize, run: usize) -> Run {
+        assert!(size > 0);
+        let mut fence_pointers: Vec<i32> = Vec::new();
+        let mut offset: usize = 0;
+
+        for i in 0..files.len() {
+            assert!(offset < size);
+            fence_pointers.push(files[i].fence_pointers[0]);
+        }
+
+        Run {
+            level: level,
+            run: run,
+            size: size,
+            capacity: capacity,
+            file_counter: RelaxedCounter::new(files.len()),
+            fence_pointers: fence_pointers,
+            files: files,
+		}
+    }
+
+
     pub fn create_empty_run(capacity: usize, level: usize, run: usize) -> Run {
         Run {
             level: level,
@@ -73,23 +95,9 @@ impl Run {
         return self.size as f64 >= self.capacity as f64 * CONFIGURATION.FULL_THRESHOLD;
     }
 
-    pub fn get_fullness(&self) -> f64 {
-        return self.size as f64 / self.capacity as f64;
-    }
-
     pub fn delete_files(&self) {
         for file in self.files.iter() {
             fs::remove_file(&file.filename).expect(&format!("Failed to remove file {} in disk run, level is {}, run is {}, file counter is {}, size is {}", &file.filename, self.level, self.run, self.file_counter.get(), self.size));
-        }
-    }
-
-    pub fn insert_files(&mut self, files_to_merge: Vec<Arc<DiskFile>>) {
-        let mut fp_idx = self.fence_pointers.binary_search(&files_to_merge[0].fence_pointers[0]).unwrap_or_else(|x| x);
-        for i in 0..files_to_merge.len() {
-            self.fence_pointers.insert(fp_idx, files_to_merge[i].fence_pointers[0]);
-            self.size += files_to_merge[i].size;
-            self.files.insert(fp_idx, files_to_merge[i].clone());
-            fp_idx += 1;
         }
     }
 

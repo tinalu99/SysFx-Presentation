@@ -135,17 +135,19 @@ impl DiskLevel {
                 let merged_files = merge_from_files(all_files_merge, last_run);
 
                 let mut files_size = 0;
+                let mut merged_files_size = 0;
                 let mut file_idx = merged_files.len() - 1;
                 let mut new_last_run = Run::create_empty_run(capacity_of_run, self.level, self.run_counter.get());
-                self.run_counter.inc();
                 for i in 0..merged_files.len() {
                     files_size += merged_files[i].size;
                     // file_idx is the index of merged_files in which all files before this index could fit into this run
                     if file_idx == merged_files.len() - 1 && files_size >= size_per_run {
                         file_idx = i;
+                        merged_files_size = files_size;
                     }
                 }
-                new_last_run.insert_files(merged_files[..file_idx + 1].to_vec());
+                new_last_run = Run::create_run_from_files(merged_files_size, capacity_of_run, merged_files[..file_idx + 1].to_vec(), self.level, self.run_counter.get());
+                self.run_counter.inc();
                 drop(runs);
 
                 // replace last run
@@ -156,9 +158,8 @@ impl DiskLevel {
 
                 // if still have data left over, add left over data as new run to level
                 if merged_files.len() > file_idx + 1 {
-                    let mut new_run = Run::create_empty_run(capacity_of_run, self.level, self.run_counter.get());
+                    let new_run = Run::create_run_from_files(files_size - merged_files_size, capacity_of_run, merged_files[..file_idx + 1].to_vec(), self.level, self.run_counter.get());
                     self.run_counter.inc();
-                    new_run.insert_files(merged_files[file_idx + 1..].to_vec());
                     runs.push(new_run);
                 }
                 return;
@@ -180,8 +181,7 @@ impl DiskLevel {
         while counter < merged_files.len() + 1 {
             files_size += merged_files[counter - 1].size;
             if files_size >= size_per_run || counter == merged_files.len() {
-                let mut new_run = Run::create_empty_run(capacity_of_run, self.level, self.run_counter.get());
-                new_run.insert_files(merged_files[last_counter..counter].to_vec());
+                let mut new_run = Run::create_run_from_files(files_size, capacity_of_run, merged_files[last_counter..counter].to_vec(), self.level, self.run_counter.get());
                 last_counter = counter;
                 self.run_counter.inc();
                 runs_to_add.push(new_run);
