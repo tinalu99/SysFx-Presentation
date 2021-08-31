@@ -196,7 +196,6 @@ impl DiskLevel {
     }
 
     pub fn get(&self, key: &i32, record: &mut Record) -> bool {
-        //debug!("get: I am level {}, I have {} runs", self.level, self.runs.len());
         let runs = self.runs.read();
         for run in runs.iter().rev() {
             if run.get(key, record) {
