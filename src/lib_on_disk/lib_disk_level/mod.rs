@@ -79,7 +79,7 @@ impl DiskLevel {
         self.capacity.fetch_sub(sz, Ordering::Relaxed);
     }
 
-	pub fn level(&self) -> usize {
+    pub fn level(&self) -> usize {
         self.level
     }
 
