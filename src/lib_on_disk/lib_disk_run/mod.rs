@@ -93,12 +93,10 @@ impl Run {
         }
     }
 
-    pub fn get(&self, key: &i32, record: &mut Record) -> bool { 
-        //debug!("level {}, run {}", self.level, self.run);
+    pub fn get(&self, key: &i32, record: &mut Record) -> bool {
         let file_idx = match binary_search_fp(&self.fence_pointers, &key) {
             Some(idx) => idx,
             None => {
-                //debug!("No file found");
                 return false;
             },
         };
