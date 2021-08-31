@@ -143,6 +143,9 @@ impl DiskLevel {
                         merged_files_size = files_size;
                     }
                 }
+                if merged_files_size == 0 {
+                    merged_files_size = files_size;
+                }
                 let new_last_run = Run::create_run_from_files(merged_files_size, capacity_of_run, merged_files[..file_idx + 1].to_vec(), self.level, self.run_counter.get());
                 self.run_counter.inc();
                 drop(runs);

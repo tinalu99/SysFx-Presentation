@@ -206,7 +206,7 @@ pub fn test_small_workload(pool: ThreadPool) {
 pub fn test_regular_workload(pool: ThreadPool) {
 	let mut workload_file: std::string::String = "regular_workload.txt".to_string();
 	let mut bulkwrite_file: std::string::String = "regular_bulkwrite.txt".to_string();
-	lib_workload::set_workload_specifications(true, true, true, 1_000_000, 100_000, 100_000, i32::min_value(), i32::max_value(), &mut workload_file, &mut bulkwrite_file);
+	lib_workload::set_workload_specifications(true, true, true, 1_000_000, 10_000, 10_000, i32::min_value(), i32::max_value(), &mut workload_file, &mut bulkwrite_file);
 	test_lsm_tree(&bulkwrite_file, &workload_file, pool);
 }
 

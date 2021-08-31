@@ -89,7 +89,6 @@ pub fn run(bulkwrite_file: &String, workload_file: &String, pool: ThreadPool) {
 pub fn run_with_time(bulkwrite_file: &String, workload_file: &String, pool: ThreadPool) {
 	let mut lsm_tree: LSMTree = LSMTree::create_lsmtree();
 	bulkwrite(bulkwrite_file, &mut lsm_tree);
-	//run_file_for_benchmark(bulkwrite_file, &mut lsm_tree);
 	let start = Instant::now();
 	run_file_for_benchmark(workload_file, lsm_tree, pool);
 	let duration = start.elapsed();
