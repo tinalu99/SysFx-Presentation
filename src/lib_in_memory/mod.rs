@@ -29,10 +29,6 @@ impl MemoryBuffer {
 		self.buffer.insert(*key, *value);
 	}
 
-	pub fn delete(&mut self, key: &i32) {
-		self.buffer.insert(*key, i32::MAX);
-	}
-
 	pub fn get(&self, key: &i32, record: &mut Record) -> bool {
 		match self.buffer.get(key) {
 			Some(&value) => {
@@ -72,7 +68,7 @@ impl MemoryBuffer {
 		self.level 
 	}
 
-    pub fn is_full(&self) -> bool {
+    	pub fn is_full(&self) -> bool {
 		assert!(self.buffer.len() <= self.buffer_size);
 		self.buffer.len() >= self.buffer_size
 	}
